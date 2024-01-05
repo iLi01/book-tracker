@@ -1,56 +1,71 @@
-// Create a "close" button and append it to each list item
-var myNodelist = document.getElementsByTagName("LI");
-var i;
-for (i = 0; i < myNodelist.length; i++) {
-  var span = document.createElement("SPAN");
-  var txt = document.createTextNode("\u00D7");
-  span.className = "close";
-  span.appendChild(txt);
-  myNodelist[i].appendChild(span);
+//First option
+let items = JSON.parse(localStorage.getItem("todo-list")) || [];
+
+function addTodo() {
+  let inputBox = document.querySelector("#todo-input");
+  let item = inputBox.value;
+  if (item === "")
+    return (document.getElementById("list").innerHTML =
+      "Write something first");
+
+  items.push({
+    value: item,
+  });
+
+  localStorage.setItem("todo-list", JSON.stringify(items));
+
+  listItems();
+
+  inputBox.value = "";
 }
 
-// Click on a close button to hide the current list item
-var close = document.getElementsByClassName("close");
-var i;
-for (i = 0; i < close.length; i++) {
-  close[i].onclick = function() {
-    var div = this.parentElement;
-    div.style.display = "none";
-  }
+function deleteItem(index) {
+  items.splice(index, 1);
+  localStorage.setItem("todo-list", JSON.stringify(items));
+  listItems();
 }
 
-// Add a "checked" symbol when clicking on a list item
-var list = document.querySelector('ul');
-list.addEventListener('click', function(ev) {
-  if (ev.target.tagName === 'LI') {
-    ev.target.classList.toggle('checked');
+function listItems() {
+  let list = "";
+  for (var i = 0; i < items.length; i++) {
+    list += "<li>";
+    list += items[i].value + " ";
+    list += "<span onclick='deleteItem(" + i + ")'><button class='remove'>Remove</button></span></li>";
   }
-}, false);
-
-// Create a new list item when clicking on the "Add" button
-function newElement() {
-  var li = document.createElement("li");
-  var inputValue = document.getElementById("myInput").value;
-  var t = document.createTextNode(inputValue);
-  li.appendChild(t);
-  if (inputValue === '') {
-    alert("You must write something!");
-  } else {
-    document.getElementById("myUL").appendChild(li);
-  }
-  document.getElementById("myInput").value = "";
-
-  var span = document.createElement("SPAN");
-  var txt = document.createTextNode("\u00D7");
-  span.className = "close";
-  span.appendChild(txt);
-  li.appendChild(span);
-
-  for (i = 0; i < close.length; i++) {
-    close[i].onclick = function() {
-      var div = this.parentElement;
-      div.style.display = "none";
-    }
-  }
+  document.querySelector("#todo-list").innerHTML = list;
 }
 
+(function () {
+  listItems();
+})();
+
+
+
+//Second option
+// document.querySelector('#push').onclick = function(){
+//   if(document.querySelector('#newtask input').value.length == 0){
+//       alert("Kindly Enter Task Name!!!!")
+//   }
+
+//   else{
+//       document.querySelector('#tasks').innerHTML += `
+//           <div class="task">
+//               <span id="taskname">
+//                   ${document.querySelector('#newtask input').value}
+//               </span>
+//               <button class="delete">
+//                   <i class="far fa-trash-alt"></i>
+//               </button>
+//           </div>
+//       `;
+
+//       //deleting elements
+//       let currentTasks = document.querySelectorAll(".delete");
+
+//       for(var i=0; i<currentTasks.length; i++){
+//           currentTasks[i].onclick = function(){
+//               this.parentNode.remove();
+//           }
+//       }
+//   }
+// }
